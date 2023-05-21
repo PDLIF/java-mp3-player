@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragDropped="#handleDragDropped" onDragExited="#handleDragExited" onDragOver="#handleDragOver" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.mp3player.Controller">
+   <children>
+      <Button fx:id="playButton" layoutX="3.0" layoutY="361.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="35.0" prefWidth="58.0" text="Play">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="pauseButton" layoutX="65.0" layoutY="361.0" mnemonicParsing="false" onAction="#pauseMedia" prefHeight="35.0" prefWidth="58.0" text="Pause">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Button>
+      <Button fx:id="resetButton" layoutX="127.0" layoutY="361.0" mnemonicParsing="false" onAction="#resetMedia" prefHeight="35.0" prefWidth="58.0" text="Reset">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Button>
+      <Button fx:id="previousButton" layoutX="189.0" layoutY="361.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="35.0" prefWidth="58.0" text="Previous">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Button>
+      <Button fx:id="nextButton" layoutX="251.0" layoutY="361.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="35.0" prefWidth="58.0" text="Next">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Button>
+      <Label fx:id="songName" alignment="CENTER" layoutX="-2.0" layoutY="321.0" prefHeight="17.0" prefWidth="606.0" text="Current song" />
+      <Slider fx:id="volumeSlider" layoutX="397.0" layoutY="371.0" prefHeight="16.0" prefWidth="203.0" value="50.0" />
+      <ComboBox fx:id="speedBox" layoutX="313.0" layoutY="361.0" prefHeight="35.0" prefWidth="83.0" promptText="Speed" />
+      <Slider fx:id="songProgressBar" layoutY="338.0" prefHeight="16.0" prefWidth="600.0" />
+      <Label fx:id="dragText" layoutX="50.0" layoutY="110.0" text="ОТПУСТИТЕ, ЧТОБЫ ДОБАВИТЬ ФАЙЛЫ" textFill="WHITE">
+         <font>
+            <Font size="28.0" />
+         </font>
+      </Label>
+      <ListView fx:id="musicList" layoutX="399.0" layoutY="89.0" prefHeight="200.0" prefWidth="200.0" />
+      <TextField fx:id="musicSearchField" layoutX="399.0" layoutY="64.0" prefHeight="26.0" prefWidth="158.0" />
+      <Button fx:id="addButton" layoutX="557.0" layoutY="64.0" mnemonicParsing="false" onAction="#clickOnButtonAdd" prefHeight="26.0" prefWidth="41.0" text="ADD" />
+   </children>
+</AnchorPane>
