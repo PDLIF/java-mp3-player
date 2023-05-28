@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragDropped="#handleDragDropped" onDragExited="#handleDragExited" onDragOver="#handleDragOver" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.mp3player.Controller">
+<AnchorPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onDragDropped="#handleDragDropped" onDragExited="#handleDragExited" onDragOver="#handleDragOver" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.mp3player.Controller">
    <children>
       <Button fx:id="playButton" layoutX="3.0" layoutY="361.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="35.0" prefWidth="58.0" text="Play">
          <font>
@@ -45,8 +45,9 @@
             <Font size="28.0" />
          </font>
       </Label>
-      <ListView fx:id="musicList" layoutX="399.0" layoutY="89.0" prefHeight="200.0" prefWidth="200.0" />
-      <TextField fx:id="musicSearchField" layoutX="399.0" layoutY="64.0" prefHeight="26.0" prefWidth="158.0" />
-      <Button fx:id="addButton" layoutX="557.0" layoutY="64.0" mnemonicParsing="false" onAction="#clickOnButtonAdd" prefHeight="26.0" prefWidth="41.0" text="ADD" />
+      <ListView fx:id="musicList" layoutX="300.0" layoutY="89.0" prefHeight="200.0" prefWidth="294.0" />
+      <TextField fx:id="musicSearchField" layoutX="300.0" layoutY="64.0" prefHeight="26.0" prefWidth="158.0" />
+      <Button fx:id="addButton" layoutX="458.0" layoutY="64.0" mnemonicParsing="false" onAction="#clickOnButtonAdd" prefHeight="26.0" prefWidth="65.0" text="ADD" />
+      <Button fx:id="deleteButton" layoutX="523.0" layoutY="64.0" mnemonicParsing="false" onAction="#clickOnButtonDelete" prefHeight="26.0" prefWidth="71.0" text="DELETE" />
    </children>
 </AnchorPane>

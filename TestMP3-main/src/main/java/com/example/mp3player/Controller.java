@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 
@@ -38,7 +39,7 @@ public class Controller implements Initializable {
     @FXML
     private Label songName;
     @FXML
-    private Button playButton, pauseButton, resetButton, previousButton, nextButton;
+    private Button playButton, pauseButton, resetButton, previousButton, nextButton, deleteButton;
     @FXML
     private ComboBox<String> speedBox;
     @FXML
@@ -205,6 +206,34 @@ public class Controller implements Initializable {
             }
         }
     }
+
+
+    //Удалить музыку
+    public void clickOnButtonDelete(ActionEvent event) throws IOException {
+        if (songs.size()!=0) {
+            File songToDelete = songs.get(songNumber);
+
+            nextMedia();
+            pauseMedia();
+
+            System.out.println("c" + songs.remove(songToDelete));
+            System.out.println("b" + musicList.getItems().remove(songToDelete.getName()));
+            System.out.println("a" + songsNames.remove(songToDelete.getName()));
+
+
+
+            Files.delete(songToDelete.toPath());
+
+//            try {
+//
+//            } catch (SecurityException x) {
+//                System.out.println(x);
+//            }
+        }
+
+
+    }
+
 
     //Drag and drop
     public void handleDragOver(DragEvent event) {
