@@ -8,6 +8,7 @@ import javafx.geometry.VerticalDirection;
 import javafx.scene.Node;
 import javafx.scene.control.Slider;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -35,7 +36,9 @@ import javafx.stage.Stage;
 import org.testfx.framework.junit5.Stop;
 import org.testfx.service.finder.WindowFinder;
 
+import java.io.File;
 import java.io.IOException;
+import java.security.Key;
 import java.util.Objects;
 
 @ExtendWith(ApplicationExtension.class)
@@ -64,6 +67,9 @@ class ControllerTest {
         });
     }
 
+
+
+    //Не работает
     @Test
     void clickOnButtonAdd(FxRobot robot) {
         robot.clickOn("#addButton");
@@ -78,34 +84,49 @@ class ControllerTest {
         String p = controller.getDirectory().getAbsolutePath();
 
         p=p.substring(0,p.length()-5);
-        System.out.println(p);
+
+
+
         // Костыль так как write в либе походу сломан
-        for (String s: (p+"src/test/java/com/example/mp3player/Test Song3.mp3").toUpperCase().split(""))
+        for (String s: (p+"src/test/TestMusic").toUpperCase().split(""))
         {   //System.out.println(s);
             switch (s) {
 
-                case "\\", "/" -> robot.push(KeyCode.BACK_SLASH);
+                case "\\", "/" -> robot.push(KeyCode.SLASH);
                 case "." -> robot.push(KeyCode.PERIOD);
                 case " " -> robot.push(KeyCode.SPACE);
-                case ":" -> robot.push(KeyCode.COLON);
-                case "-" -> robot.sleep(1);
+                case ":" -> robot.push(KeyCode.SHIFT,KeyCode.SEMICOLON);
+                case "-" -> robot.push(KeyCode.MINUS);
                 default -> {
                     KeyCode k = KeyCode.getKeyCode(s);
                     robot.push(k);
                 }
             }
         };
+        robot.push(KeyCode.ENTER);
         robot.push(KeyCode.TAB);
         robot.push(KeyCode.TAB);
         robot.push(KeyCode.TAB);
         robot.push(KeyCode.TAB);
         robot.push(KeyCode.TAB);
-        robot.push(KeyCode.TAB);
-        robot.push(KeyCode.TAB);
+        for (String s: "Test Song3.mp3".toUpperCase().split(""))
+        {
+            switch (s) {
 
-
+                case "\\", "/" -> robot.push(KeyCode.SLASH);
+                case "." -> robot.push(KeyCode.PERIOD);
+                case " " -> robot.push(KeyCode.SPACE);
+                case ":" -> robot.push(KeyCode.SHIFT,KeyCode.SEMICOLON);
+                case "-" -> robot.push(KeyCode.MINUS);
+                default -> {
+                    KeyCode k = KeyCode.getKeyCode(s);
+                    robot.push(k);
+                }
+            }
+        };
         robot.push(KeyCode.ENTER);
 
+        Assertions.assertTrue(controller.getSongs().contains(new File("music/Test Song3.mp3")));
 
     }
 
