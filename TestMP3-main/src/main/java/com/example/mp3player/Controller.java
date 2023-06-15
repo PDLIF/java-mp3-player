@@ -18,17 +18,20 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
 import javafx.stage.FileChooser;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 
@@ -65,12 +68,17 @@ public class Controller implements Initializable {
     private ArrayList<File> songs;
 
     private int songNumber;
+
+
+
     private int[] speeds = {25, 50, 75, 100, 125, 150, 175, 200};
 
     private Timer timer;
     private TimerTask task;
     private boolean running;
     private static ArrayList<String> songsNames = new ArrayList<String>();
+
+    public LinkedList<Path> toDelete = new LinkedList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -84,7 +92,8 @@ public class Controller implements Initializable {
         if (files != null) {
 
             for (File file : files) {
-                songs.add(file);
+                if (!songs.contains(file))
+                    songs.add(file);
             }
         }
 
@@ -124,7 +133,9 @@ public class Controller implements Initializable {
 
         //Создание списка песен
         for (File file : files) {
-            songsNames.add(file.getName());
+            if (!songsNames.contains(file.getName())){
+                songsNames.add(file.getName());
+            }
         }
 
         musicList.getItems().addAll(songsNames);
@@ -172,6 +183,8 @@ public class Controller implements Initializable {
                 }
             }
         });
+
+
     }
 
     //Функция поиска
@@ -216,19 +229,15 @@ public class Controller implements Initializable {
             nextMedia();
             pauseMedia();
 
-            System.out.println("c" + songs.remove(songToDelete));
-            System.out.println("b" + musicList.getItems().remove(songToDelete.getName()));
-            System.out.println("a" + songsNames.remove(songToDelete.getName()));
+            songs.remove(songToDelete);
+            musicList.getItems().remove(songToDelete.getName());
+            songsNames.remove(songToDelete.getName());
+
+
+            songToDelete.deleteOnExit();
 
 
 
-            Files.delete(songToDelete.toPath());
-
-//            try {
-//
-//            } catch (SecurityException x) {
-//                System.out.println(x);
-//            }
         }
 
 
@@ -438,5 +447,51 @@ public class Controller implements Initializable {
 
         running = false;
         timer.cancel();
+    }
+
+
+    //GettersForTest
+    public Media getMedia() {
+        return media;
+    }
+
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
+    public File getDirectory() {
+        return directory;
+    }
+
+    public File[] getFiles() {
+        return files;
+    }
+
+    public ArrayList<File> getSongs() {
+        return songs;
+    }
+
+    public int getSongNumber() {
+        return songNumber;
+    }
+
+    public int[] getSpeeds() {
+        return speeds;
+    }
+
+    public Timer getTimer() {
+        return timer;
+    }
+
+    public TimerTask getTask() {
+        return task;
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public static ArrayList<String> getSongsNames() {
+        return songsNames;
     }
 }
