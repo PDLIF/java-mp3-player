@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="true" type="JUnit" factoryName="JUnit">
+    <module name="MP3Player1" />
+    <option name="PACKAGE_NAME" value="com.example.mp3player" />
+    <option name="MAIN_CLASS_NAME" value="com.example.mp3player.ControllerTest" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="class" />
+    <option name="VM_PARAMETERS" value="-ea --add-exports javafx.graphics/com.sun.javafx.application=ALL-UNNAMED" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
