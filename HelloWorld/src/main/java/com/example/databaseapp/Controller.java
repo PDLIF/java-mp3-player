@@ -3,7 +3,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -49,17 +51,55 @@ public class Controller {
 
     @FXML
     private void onAddButtonClick(ActionEvent event) {
-        try {
-            int id = data.size() + 1;
-            String name = nameField.getText();
-            String birthdate = birthdatePicker.getValue().toString();
-            String email = emailField.getText();
-            Person newPerson = new Person(id, name, birthdate, email);
-            database.add(newPerson);
-            data.add(newPerson);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Dialog<Person> dialog = new Dialog<>();
+        dialog.setTitle("Добавить нового человека");
+
+        // Создаем панель для ввода данных
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField nameField = new TextField();
+        nameField.setPromptText("Имя");
+        DatePicker birthdatePicker = new DatePicker();
+        birthdatePicker.setPromptText("Дата рождения");
+        TextField emailField = new TextField();
+        emailField.setPromptText("Email");
+
+        grid.add(new Label("Имя:"), 0, 0);
+        grid.add(nameField, 1, 0);
+        grid.add(new Label("Дата рождения:"), 0, 1);
+        grid.add(birthdatePicker, 1, 1);
+        grid.add(new Label("Email:"), 0, 2);
+        grid.add(emailField, 1, 2);
+
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.setContent(grid);
+        dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        // Обработка нажатия кнопки OK
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                int id = data.size() + 1; // Генерация ID
+                String name = nameField.getText();
+                String birthdate = birthdatePicker.getValue() != null ? birthdatePicker.getValue().toString() : "";
+                String email = emailField.getText();
+                return new Person(id, name, birthdate, email);
+            }
+            return null;
+        });
+
+        // Показать диалог и обработать результат
+        dialog.showAndWait().ifPresent(person -> {
+            try {
+                database.add(person); // Добавление в базу данных
+                data.add(person); // Добавление в таблицу
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Обработка ошибок при добавлении
+            }
+        });
     }
     @FXML
     private void onSelectDatabaseClick(ActionEvent event) {
