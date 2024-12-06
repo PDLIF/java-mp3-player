@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.databaseapp.Controller">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+
+    <!-- Верхняя панель с кнопками операций -->
+    <HBox alignment="CENTER" spacing="10.0">
+        <Button onAction="#onAddButtonClick" text="Добавить" />
+        <Button onAction="#onUpdateButtonClick" text="Обновить" />
+        <Button onAction="#onDeleteButtonClick" text="Удалить" />
+        <Button onAction="#onRefreshButtonClick" text="Обновить таблицу" />
+    </HBox>
+
+    <!-- Поля ввода для данных -->
+    <HBox alignment="CENTER" spacing="10.0">
+        <TextField fx:id="nameField" promptText="Имя" />
+      <DatePicker fx:id="birthdatePicker" prefHeight="25.0" prefWidth="141.0" promptText="Дата рождения (YYYY-MM-DD)" />
+        <TextField fx:id="emailField" promptText="Email" />
+    </HBox>
+
+    <!-- Таблица для отображения данных -->
+    <TableView fx:id="dataTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID" />
+            <TableColumn fx:id="nameColumn" text="Имя" />
+            <TableColumn fx:id="birthdateColumn" text="Дата рождения" />
+            <TableColumn fx:id="emailColumn" text="Email" />
+        </columns>
+    </TableView>
+</VBox>
