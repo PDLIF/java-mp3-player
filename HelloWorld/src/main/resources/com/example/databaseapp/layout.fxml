@@ -15,25 +15,25 @@
     </padding>
     <HBox alignment="CENTER" spacing="10.0">
         <!-- Верхняя панель с кнопками операций -->
-        <Button onAction="#onSelectDatabaseClick" text="Выбрать БД"/>
-        <Button onAction="#onSelectDatabaseClick" text="Создать БД"/>
-        <Button onAction="#onSelectDatabaseClick" text="Сброс"/>
-        <Button onAction="#onSelectDatabaseClick" text="Обновить БД"/>
+        <Button onAction="#onSelectDatabaseClick" text="Выбрать БД" />
+        <Button onAction="#onSelectDatabaseClick" text="Создать БД" />
+        <Button onAction="#onSelectDatabaseClick" text="Сброс" />
+        <Button onAction="#onSelectDatabaseClick" text="Обновить БД" />
     </HBox>
 
-    <!-- Поля ввода для данных -->
+       <!-- Поля ввода для данных -->
     <HBox spacing="10.0">
-        <Button onAction="#onAddButtonClick" text="Добавить" />
-        <TextField fx:id="nameField" promptText="Имя" />
-      <DatePicker fx:id="birthdatePicker" prefHeight="25.0" prefWidth="141.0" promptText="Дата рождения (YYYY-MM-DD)" />
-        <TextField fx:id="emailField" promptText="Email" />
-    </HBox>
-    <HBox spacing="10.0">
-        <Button onAction="#onFindButtonClick" text="Найти"/>
-        <TextField fx:id="FindId" promptText="ID"/>
-        <TextField fx:id="FindName" promptText="Имя"/>
-        <DatePicker fx:id="FindBirthdate" prefHeight="25.0" prefWidth="141.0" promptText="Дата рождения (YYYY-MM-DD)"/>
-        <TextField fx:id="FindEmail" promptText="Email"/>
+      <children>
+           <Button onAction="#onAddButtonClick" text="Добавить" />
+           <Button onAction="#onDeleteButtonClick" text="Удалить" />
+          <HBox alignment="TOP_RIGHT" spacing="10.0">
+              <Button onAction="#onFindButtonClick" prefHeight="25.0" prefWidth="62.0" text="Найти" />
+              <TextField fx:id="FindId" prefHeight="25.0" prefWidth="54.0" promptText="ID" />
+              <TextField fx:id="FindName" promptText="Имя" />
+              <DatePicker fx:id="FindBirthdate" prefHeight="25.0" prefWidth="141.0" promptText="Дата рождения (YYYY-MM-DD)" />
+              <TextField fx:id="FindEmail" promptText="Email" />
+          </HBox>
+      </children>
     </HBox>
 
              <!-- Таблица для отображения данных -->
@@ -45,7 +45,5 @@
             <TableColumn fx:id="emailColumn" prefWidth="275.0" text="Email" />
         </columns>
     </TableView>
-    <HBox spacing="10.0">
-        <Button onAction="#onDeleteButtonClick" text="Удалить" />
-    </HBox>
+    <HBox spacing="10.0" />
 </VBox>
