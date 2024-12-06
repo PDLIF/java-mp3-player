@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileDatabase {
-    private final String filePath;
+    private String filePath;
 
+    public FileDatabase() {
+
+    }
     public FileDatabase(String filePath) {
         this.filePath = filePath;
     }
@@ -44,5 +47,54 @@ public class FileDatabase {
                 writer.newLine();
             }
         }
+    }
+    public List<Person> searchById(int id) throws IOException {
+        List<Person> foundPeople = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                int personId = Integer.parseInt(parts[0]);
+                String name = parts[1];
+                String birthdate = parts[2];
+                String email = parts[3];
+
+                if (personId == id) {
+                    foundPeople.add(new Person(personId, name, birthdate, email));
+                    break; // Если ID уникален, можно выйти из цикла
+                }
+            }
+        }
+        return foundPeople;
+    }
+    public List<Person> search(String name, String birthdate, String email) throws IOException {
+        List<Person> foundPeople = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                int id = Integer.parseInt(parts[0]);
+                String personName = parts[1];
+                String personBirthdate = parts[2];
+                String personEmail = parts[3];
+
+                // Проверка на совпадение по критериям
+                boolean matches = true;
+                if (!name.isEmpty() && !personName.toLowerCase().contains(name.toLowerCase())) {
+                    matches = false;
+                }
+                if (!birthdate.isEmpty() && !personBirthdate.equals(birthdate)) {
+                    matches = false;
+                }
+                if (!email.isEmpty() && !personEmail.toLowerCase().contains(email.toLowerCase())) {
+                    matches = false;
+                }
+
+                if (matches) {
+                    foundPeople.add(new Person(id, personName, personBirthdate, personEmail));
+                }
+            }
+        }
+        return foundPeople;
     }
 }

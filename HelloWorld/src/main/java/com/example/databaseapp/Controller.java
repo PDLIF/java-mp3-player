@@ -11,6 +11,10 @@ import java.io.IOException;
 import java.util.List;
 
 public class Controller {
+    public TextField FindId;
+    public TextField FindName;
+    public DatePicker FindBirthdate;
+    public TextField FindEmail;
     @FXML private TextField nameField;
     @FXML private DatePicker birthdatePicker;
     @FXML private TextField emailField;
@@ -20,7 +24,7 @@ public class Controller {
     @FXML private TableColumn<Person, String> birthdateColumn;
     @FXML private TableColumn<Person, String> emailColumn;
 
-    private FileDatabase database = new FileDatabase("data.csv");
+    private FileDatabase database = new FileDatabase();
     private final ObservableList<Person> data = FXCollections.observableArrayList();
 
     @FXML
@@ -31,7 +35,7 @@ public class Controller {
         emailColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getEmail()));
 
         dataTable.setItems(data);
-        loadData();
+        //loadData();
     }
 
     private void loadData() {
@@ -74,6 +78,49 @@ public class Controller {
     }
 
     public void onRefreshButtonClick(ActionEvent actionEvent) {
+    }
+
+    @FXML
+    private void onFindButtonClick(ActionEvent event) {
+        String name = FindName.getText();
+        String birthdate = FindBirthdate.getValue() != null ? FindBirthdate.getValue().toString() : "";
+        String email = FindEmail.getText();
+        String idText = FindId.getText(); // Получаем ID из текстового поля
+
+        try {
+            List<Person> foundPeople;
+
+            if (!idText.isEmpty()) {
+                // Если ID указан, ищем только по ID
+                int id = Integer.parseInt(idText);
+                foundPeople = database.searchById(id); // Метод поиска по ID
+            } else {
+                // Если ID не указан, ищем по другим параметрам
+                foundPeople = database.search(name, birthdate, email);
+            }
+
+            data.setAll(foundPeople); // Обновляем таблицу с найденными записями
+            if (foundPeople.isEmpty()) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Поиск завершен");
+                alert.setHeaderText(null);
+                alert.setContentText("Записи не найдены.");
+                alert.showAndWait();
+            }
+        } catch (NumberFormatException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка ввода");
+            alert.setHeaderText(null);
+            alert.setContentText("Пожалуйста, введите корректный ID.");
+            alert.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Ошибка поиска");
+            alert.setHeaderText(null);
+            alert.setContentText("Произошла ошибка при поиске данных.");
+            alert.showAndWait();
+        }
     }
 
     // Реализация обновления и удаления аналогична
