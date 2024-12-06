@@ -4,6 +4,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.stage.FileChooser;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -54,7 +57,16 @@ public class Controller {
             e.printStackTrace();
         }
     }
-
+    @FXML
+    private void onSelectDatabaseClick(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File selectedFile = fileChooser.showOpenDialog(dataTable.getScene().getWindow());
+        if (selectedFile != null) {
+            FileDatabase database = new FileDatabase(selectedFile.getAbsolutePath());
+            loadData(); // Загрузить данные из выбранной базы данных
+        }
+    }
     public void onUpdateButtonClick(ActionEvent actionEvent) {
     }
 
