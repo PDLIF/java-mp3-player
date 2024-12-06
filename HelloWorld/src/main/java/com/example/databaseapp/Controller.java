@@ -20,7 +20,7 @@ public class Controller {
     @FXML private TableColumn<Person, String> birthdateColumn;
     @FXML private TableColumn<Person, String> emailColumn;
 
-    private final FileDatabase database = new FileDatabase("data.csv");
+    private FileDatabase database = new FileDatabase("data.csv");
     private final ObservableList<Person> data = FXCollections.observableArrayList();
 
     @FXML
@@ -63,7 +63,7 @@ public class Controller {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         File selectedFile = fileChooser.showOpenDialog(dataTable.getScene().getWindow());
         if (selectedFile != null) {
-            FileDatabase database = new FileDatabase(selectedFile.getAbsolutePath());
+            database = new FileDatabase(selectedFile.getAbsolutePath());
             loadData(); // Загрузить данные из выбранной базы данных
         }
     }
