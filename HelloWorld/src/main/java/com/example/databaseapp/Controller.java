@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -19,6 +20,9 @@ public class Controller {
     public TextField FindName;
     public DatePicker FindBirthdate;
     public TextField FindEmail;
+    public HBox SearchButtons;
+    public HBox TableButtons;
+    public HBox DataBaseActiveButtons;
     @FXML private TextField nameField;
     @FXML private DatePicker birthdatePicker;
     @FXML private TextField emailField;
@@ -29,6 +33,7 @@ public class Controller {
     @FXML private TableColumn<Person, String> emailColumn;
 
     private FileDatabase database = new FileDatabase();
+    private String backupFilePath;
     private final ObservableList<Person> data = FXCollections.observableArrayList();
 
     @FXML
@@ -39,6 +44,8 @@ public class Controller {
         emailColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getEmail()));
 
         dataTable.setItems(data);
+
+        updateUIState(false);
         //loadData();
     }
 
@@ -117,13 +124,32 @@ public class Controller {
                 Files.copy(selectedFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 database = new FileDatabase(selectedFile.getAbsolutePath());
                 loadData(); // Загрузить данные
+                updateUIState(true); //
             } catch (IOException e) {
                 e.printStackTrace();
                 // Обработка ошибок при копировании файла
             }
         }
     }
-
+    @FXML
+    private void onCreateDatabaseClick(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File newFile = fileChooser.showSaveDialog(dataTable.getScene().getWindow());
+        if (newFile != null) {
+            try {
+                // Создаем пустой файл
+                newFile.createNewFile();
+                database = new FileDatabase(newFile.getAbsolutePath());
+                database.clear(); // Очищаем файл, если нужно
+                loadData(); // Загружаем данные (пока пустые)
+                updateUIState(true); // Активируем элементы интерфейса
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Обработка ошибок при создании файла
+            }
+        }
+    }
     @FXML
     private void onResetButtonClick(ActionEvent event) {
         // Загрузить данные из бека файла
@@ -135,7 +161,11 @@ public class Controller {
             loadData(); // Загрузить данные из бека файла
         }
     }
-
+    @FXML
+    public void onClearButtonClick(ActionEvent actionEvent) throws IOException {
+        database.clear();
+        loadData();
+    }
     @FXML
     private void onUpdateButtonClick(ActionEvent actionEvent) {
         // Создаем резервную копию, если она уже существует
@@ -234,4 +264,14 @@ public class Controller {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+    private void updateUIState(boolean isDatabaseSelected) {
+        // Деактивируем или активируем элементы интерфейса
+        DataBaseActiveButtons.setDisable(!isDatabaseSelected);
+        TableButtons.setDisable(!isDatabaseSelected);
+        dataTable.setDisable(!isDatabaseSelected);
+        // Добавьте другие элементы интерфейса, которые нужно активировать/деактивировать
+    }
+
+
 }
