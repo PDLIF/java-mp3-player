@@ -53,6 +53,7 @@ public class Controller {
         try {
             List<Person> people = database.readAll();
             data.setAll(people);
+            dataTable.setItems(data); // Обновляем таблицу
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -90,7 +91,7 @@ public class Controller {
         // Обработка нажатия кнопки OK
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == ButtonType.OK) {
-                int id = data.size() + 1; // Генерация ID
+                int id = generateUniqueId(); // Генерация ID
                 String name = nameField.getText();
                 String birthdate = birthdatePicker.getValue() != null ? birthdatePicker.getValue().toString() : "";
                 String email = emailField.getText();
@@ -111,6 +112,17 @@ public class Controller {
             }
         });
     }
+
+    // Метод для генерации уникального ID
+    private int generateUniqueId() {
+        try {
+            return database.getMaxId() + 1; // Генерируем новый ID
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 1; // Если произошла ошибка, возвращаем 1 как начальный ID
+        }
+    }
+
     @FXML
     private void onSelectDatabaseClick(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -118,13 +130,14 @@ public class Controller {
         File selectedFile = fileChooser.showOpenDialog(dataTable.getScene().getWindow());
         if (selectedFile != null) {
             // Создаем дублирующий файл
-            File backupFile = new File(selectedFile.getAbsolutePath().replace(".csv", "_backup.csv"));
+            backupFilePath = selectedFile.getAbsolutePath().replace(".csv", "_backup.csv");
+            File backupFile = new File(backupFilePath);
             try {
                 // Копируем оригинальный файл в дублирующий, а затем грузим данные с основной базы
                 Files.copy(selectedFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 database = new FileDatabase(selectedFile.getAbsolutePath());
+                updateUIState(true); // Активируем элементы интерфейса
                 loadData(); // Загрузить данные
-                updateUIState(true); //
             } catch (IOException e) {
                 e.printStackTrace();
                 // Обработка ошибок при копировании файла
@@ -141,9 +154,9 @@ public class Controller {
                 // Создаем пустой файл
                 newFile.createNewFile();
                 database = new FileDatabase(newFile.getAbsolutePath());
-                database.clear(); // Очищаем файл, если нужно
-                loadData(); // Загружаем данные (пока пустые)
+                backupFilePath = newFile.getAbsolutePath().replace(".csv", "_backup.csv"); // Устанавливаем путь к резервной копии
                 updateUIState(true); // Активируем элементы интерфейса
+                loadData(); // Загружаем данные (пока пустые)
             } catch (IOException e) {
                 e.printStackTrace();
                 // Обработка ошибок при создании файла
@@ -152,13 +165,20 @@ public class Controller {
     }
     @FXML
     private void onResetButtonClick(ActionEvent event) {
-        // Загрузить данные из бека файла
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "_backup.csv"));
-        File selectedFile = fileChooser.showOpenDialog(dataTable.getScene().getWindow());
-        if (selectedFile != null) {
-            database = new FileDatabase(selectedFile .getAbsolutePath());
-            loadData(); // Загрузить данные из бека файла
+        if (backupFilePath != null) {
+            File backupFile = new File(backupFilePath);
+            File mainDatabaseFile = new File(database.getFilePath());
+
+            try {
+                // Копируем содержимое резервного файла в основной файл базы данных
+                Files.copy(backupFile.toPath(), mainDatabaseFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                loadData(); // Загружаем данные из основного файла базы данных
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Ошибка при сбросе данных: " + e.getMessage());
+            }
+        } else {
+            showAlert("Резервная копия не найдена. Пожалуйста, создайте или выберите базу данных.");
         }
     }
     @FXML
@@ -182,13 +202,13 @@ public class Controller {
             // Обработка ошибок при создании резервной копии
         }
 
-        // Обновляем базу данных
-        try {
-            database.overwrite(data); // Перезаписываем базу данных текущими данными
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Обработка ошибок при обновлении базы данных
-        }
+//        // Обновляем базу данных
+//        try {
+//            database.overwrite(data); // Перезаписываем базу данных текущими данными
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            // Обработка ошибок при обновлении базы данных
+//        }
     }
     @FXML
     private void onDeleteButtonClick() {

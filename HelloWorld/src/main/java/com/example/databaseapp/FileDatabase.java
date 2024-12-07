@@ -110,4 +110,12 @@ public class FileDatabase {
     public String getFilePath() {
         return filePath;
     }
+
+    public int getMaxId() throws IOException {
+        List<Person> people = readAll(); // Предполагается, что этот метод возвращает список всех людей
+        return people.stream()
+                .mapToInt(Person::getId)
+                .max()
+                .orElse(0); // Если список пуст, возвращаем 0
+    }
 }
