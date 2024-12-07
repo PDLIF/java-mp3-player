@@ -159,7 +159,20 @@ public class Controller {
             // Обработка ошибок при обновлении базы данных
         }
     }
-    public void onDeleteButtonClick(ActionEvent actionEvent) {
+    @FXML
+    private void onDeleteButtonClick() {
+        // Получаем выбранного человека из интерфейса (например, из таблицы)
+        Person selectedPerson = getSelectedPerson(); // Метод для получения выбранного человека
+        if (selectedPerson != null) {
+            try {
+                database.deleteById(selectedPerson.getId()); // Удаляем запись из базы данных
+                refreshTable(); // Обновляем таблицу, чтобы отобразить изменения
+            } catch (IOException e) {
+                showAlert("Ошибка при удалении записи: " + e.getMessage()); // Обработка ошибок
+            }
+        } else {
+            showAlert("Пожалуйста, выберите запись для удаления."); // Сообщение, если ничего не выбрано
+        }
     }
 
     public void onRefreshButtonClick(ActionEvent actionEvent) {
@@ -208,5 +221,16 @@ public class Controller {
         }
     }
 
-    // Реализация обновления и удаления аналогична
+    private void refreshTable() throws IOException {
+        List<Person> people = database.readAll(); // Читаем обновленный список людей
+        dataTable.setItems(FXCollections.observableArrayList(people)); // Обновляем таблицу
+    }
+    private Person getSelectedPerson() {
+        return dataTable.getSelectionModel().getSelectedItem(); // Предполагаем, что у вас есть TableView
+    }
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 }

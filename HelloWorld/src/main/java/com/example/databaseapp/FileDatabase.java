@@ -38,7 +38,11 @@ public class FileDatabase {
             writer.newLine();
         }
     }
-
+    public void deleteById(int id) throws IOException {
+        List<Person> people = readAll(); // Читаем все записи
+        people.removeIf(person -> person.getId() == id); // Удаляем запись с заданным ID
+        overwrite(people); // Перезаписываем файл с обновленным списком
+    }
     // Перезапись всех записей (например, после обновления или удаления)
     public void overwrite(List<Person> people) throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
