@@ -97,6 +97,7 @@ public class Controller {
             try {
                 database.add(person); // Добавление в базу данных
                 data.add(person); // Добавление в таблицу
+                dataTable.setItems(data); // Обновляем таблицу
             } catch (IOException e) {
                 e.printStackTrace();
                 // Обработка ошибок при добавлении
@@ -112,10 +113,10 @@ public class Controller {
             // Создаем дублирующий файл
             File backupFile = new File(selectedFile.getAbsolutePath().replace(".csv", "_backup.csv"));
             try {
-                // Копируем оригинальный файл в дублирующий
+                // Копируем оригинальный файл в дублирующий, а затем грузим данные с основной базы
                 Files.copy(selectedFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                database = new FileDatabase(backupFile.getAbsolutePath());
-                loadData(); // Загрузить данные из дублирующего файла
+                database = new FileDatabase(selectedFile.getAbsolutePath());
+                loadData(); // Загрузить данные
             } catch (IOException e) {
                 e.printStackTrace();
                 // Обработка ошибок при копировании файла
@@ -125,13 +126,13 @@ public class Controller {
 
     @FXML
     private void onResetButtonClick(ActionEvent event) {
-        // Загрузить данные из оригинального файла
+        // Загрузить данные из бека файла
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "_backup.csv"));
         File selectedFile = fileChooser.showOpenDialog(dataTable.getScene().getWindow());
         if (selectedFile != null) {
             database = new FileDatabase(selectedFile .getAbsolutePath());
-            loadData(); // Загрузить данные из оригинального файла
+            loadData(); // Загрузить данные из бека файла
         }
     }
 

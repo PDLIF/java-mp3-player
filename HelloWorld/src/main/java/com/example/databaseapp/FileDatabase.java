@@ -101,7 +101,12 @@ public class FileDatabase {
         }
         return foundPeople;
     }
-
+    public void clear() throws IOException {
+        // Очищаем файл базы данных
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            // Просто не записываем ничего, тем самым очищаем файл
+        }
+    }
     public String getFilePath() {
         return filePath;
     }
