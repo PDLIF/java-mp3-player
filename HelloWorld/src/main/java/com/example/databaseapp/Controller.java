@@ -274,8 +274,10 @@ public class Controller {
 
     private void refreshTable() throws IOException {
         List<Person> people = database.readAll(); // Читаем обновленный список людей
-        dataTable.setItems(FXCollections.observableArrayList(people)); // Обновляем таблицу
+        data.setAll(people); // Обновляем данные в ObservableList
+        dataTable.setItems(data); // Обновляем таблицу
     }
+    
     private Person getSelectedPerson() {
         return dataTable.getSelectionModel().getSelectedItem(); // Предполагаем, что у вас есть TableView
     }
