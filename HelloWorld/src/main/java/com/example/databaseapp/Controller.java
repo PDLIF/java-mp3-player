@@ -10,6 +10,8 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 public class Controller {
@@ -107,13 +109,56 @@ public class Controller {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
         File selectedFile = fileChooser.showOpenDialog(dataTable.getScene().getWindow());
         if (selectedFile != null) {
-            database = new FileDatabase(selectedFile.getAbsolutePath());
-            loadData(); // Загрузить данные из выбранной базы данных
+            // Создаем дублирующий файл
+            File backupFile = new File(selectedFile.getAbsolutePath().replace(".csv", "_backup.csv"));
+            try {
+                // Копируем оригинальный файл в дублирующий
+                Files.copy(selectedFile.toPath(), backupFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                database = new FileDatabase(backupFile.getAbsolutePath());
+                loadData(); // Загрузить данные из дублирующего файла
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Обработка ошибок при копировании файла
+            }
         }
     }
-    public void onUpdateButtonClick(ActionEvent actionEvent) {
+
+    @FXML
+    private void onResetButtonClick(ActionEvent event) {
+        // Загрузить данные из оригинального файла
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        File selectedFile = fileChooser.showOpenDialog(dataTable.getScene().getWindow());
+        if (selectedFile != null) {
+            database = new FileDatabase(selectedFile .getAbsolutePath());
+            loadData(); // Загрузить данные из оригинального файла
+        }
     }
 
+    @FXML
+    private void onUpdateButtonClick(ActionEvent actionEvent) {
+        // Создаем резервную копию, если она уже существует
+        File backupFile = new File(database.getFilePath().replace(".csv", "_backup.csv"));
+        if (backupFile.exists()) {
+            backupFile.delete(); // Удаляем старую резервную копию
+        }
+
+        // Создаем новую резервную копию
+        try {
+            Files.copy(new File(database.getFilePath()).toPath(), backupFile.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Обработка ошибок при создании резервной копии
+        }
+
+        // Обновляем базу данных
+        try {
+            database.overwrite(data); // Перезаписываем базу данных текущими данными
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Обработка ошибок при обновлении базы данных
+        }
+    }
     public void onDeleteButtonClick(ActionEvent actionEvent) {
     }
 

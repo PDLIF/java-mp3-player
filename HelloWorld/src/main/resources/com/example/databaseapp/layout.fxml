@@ -17,8 +17,8 @@
         <!-- Верхняя панель с кнопками операций -->
         <Button onAction="#onSelectDatabaseClick" text="Выбрать БД" />
         <Button onAction="#onSelectDatabaseClick" text="Создать БД" />
-        <Button onAction="#onSelectDatabaseClick" text="Сброс" />
-        <Button onAction="#onSelectDatabaseClick" text="Обновить БД" />
+        <Button onAction="#onResetButtonClick" text="Сброс" />
+        <Button onAction="#onUpdateButtonClick" text="Обновить БД" />
     </HBox>
 
        <!-- Поля ввода для данных -->

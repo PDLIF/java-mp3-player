@@ -97,4 +97,8 @@ public class FileDatabase {
         }
         return foundPeople;
     }
+
+    public String getFilePath() {
+        return filePath;
+    }
 }
