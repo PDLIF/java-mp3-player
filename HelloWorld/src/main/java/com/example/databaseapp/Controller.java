@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class Controller {
@@ -247,15 +248,30 @@ public class Controller {
 
             TextField nameField = new TextField(selectedPerson.getName());
             nameField.setPromptText("Имя");
-            DatePicker birthdatePicker = new DatePicker(LocalDate.parse(selectedPerson.getBirthdate()));
+            DatePicker birthdatePicker = new DatePicker(); // Создаем DatePicker
+
+            try {
+                // Пытаемся распарсить дату
+                LocalDate date = LocalDate.parse(selectedPerson.getBirthdate());
+                birthdatePicker.setValue(date); // Устанавливаем значение в DatePicker, если парсинг успешен
+            } catch (DateTimeParseException e) {
+                // Если парсинг не удался, можно оставить DatePicker пустым или установить значение по умолчанию
+                birthdatePicker.setValue(null); // Устанавливаем значение null, если парсинг не удался
+                // Вы можете также вывести сообщение об ошибке, если это необходимо
+                System.out.println("Ошибка парсинга даты: " + e.getMessage());
+            }
+
+
             birthdatePicker.setPromptText("Дата рождения");
             TextField emailField = new TextField(selectedPerson.getEmail());
+            emailField.setPromptText("Email");
 
             grid.add(new Label("Имя:"), 0, 0);
             grid.add(nameField, 1, 0);
             grid.add(new Label("Дата рождения:"), 0, 1);
             grid.add(birthdatePicker, 1, 1);
-            grid.add(new Label("Email"), 1, 2);
+            grid.add(new Label("Email"), 0, 2);
+            grid.add(emailField, 1, 2);
 
             DialogPane dialogPane = dialog.getDialogPane();
             dialogPane.setContent(grid);
