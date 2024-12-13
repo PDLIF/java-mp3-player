@@ -53,6 +53,8 @@ public class FileDatabase {
         }
     }
     public List<Person> searchById(int id) throws IOException {
+        long startTime = System.currentTimeMillis();
+
         List<Person> foundPeople = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -69,6 +71,11 @@ public class FileDatabase {
                 }
             }
         }
+
+        // блок кода, время выполнения которого нужно измерить
+        long endTime = System.currentTimeMillis();
+        System.out.println("endTime - startTime: " + (endTime - startTime));
+
         return foundPeople;
     }
     public List<Person> search(String name, String birthdate, String email) throws IOException {
