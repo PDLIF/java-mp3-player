@@ -11,12 +11,16 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.ss.usermodel.*;
 
 public class Controller {
     public TextField FindId;
@@ -193,6 +197,51 @@ public class Controller {
         database.clear();
         loadData();
     }
+
+
+    @FXML
+    private void onExportToExcelClick(ActionEvent event) {
+        Workbook workbook = new XSSFWorkbook(); // Создаем новый рабочий файл Excel
+        Sheet sheet = workbook.createSheet("People"); // Создаем новый лист
+
+        // Создаем заголовки
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("ID");
+        headerRow.createCell(1).setCellValue("Имя");
+        headerRow.createCell(2).setCellValue("Дата рождения");
+        headerRow.createCell(3).setCellValue("Email");
+
+        // Заполняем данными
+        List<Person> people = data; // Получаем данные из ObservableList
+        for (int i = 0; i < people.size(); i++) {
+            Person person = people.get(i);
+            Row row = sheet.createRow(i + 1); // Создаем новую строку для каждого человека
+            row.createCell(0).setCellValue(person.getId());
+            row.createCell(1).setCellValue(person.getName());
+            row.createCell(2).setCellValue(person.getBirthdate());
+            row.createCell(3).setCellValue(person.getEmail());
+        }
+
+        // Сохранение файла
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+        File file = fileChooser.showSaveDialog(dataTable.getScene().getWindow());
+        if (file != null) {
+            try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                workbook.write(fileOut); // Записываем данные в файл
+                System.out.println("Данные успешно экспортированы в " + file.getAbsolutePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Ошибка при экспорте данных: " + e.getMessage());
+            }
+        }
+
+        try {
+            workbook.close(); // Закрываем рабочую книгу
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @FXML
     private void onUpdateButtonClick(ActionEvent actionEvent) {
         // Создаем резервную копию, если она уже существует
@@ -232,7 +281,6 @@ public class Controller {
             showAlert("Пожалуйста, выберите запись для удаления."); // Сообщение, если ничего не выбрано
         }
     }
-
     @FXML
     private void onEditButtonClick(ActionEvent event) {
         Person selectedPerson = getSelectedPerson(); // Получаем выбранного человека из таблицы
@@ -305,7 +353,6 @@ public class Controller {
             showAlert("Пожалуйста, выберите запись для редактирования."); // Сообщение, если ничего не выбрано
         }
     }
-
     @FXML
     private void onFindButtonClick(ActionEvent event) {
         String name = FindName.getText();

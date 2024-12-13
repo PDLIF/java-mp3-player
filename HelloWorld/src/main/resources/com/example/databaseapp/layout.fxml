@@ -25,6 +25,7 @@
                <Button onAction="#onResetButtonClick" text="Сброс" />
                <Button onAction="#onUpdateButtonClick" text="Обновить БД" />
                <Button onAction="#onClearButtonClick" text="Очистить БД" />
+               <Button onAction="#onExportToExcelClick" text="Экспорт в Excel" />
            </HBox>
       </items>
    </SplitPane>
