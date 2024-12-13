@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Controller {
@@ -231,7 +232,62 @@ public class Controller {
         }
     }
 
-    public void onRefreshButtonClick(ActionEvent actionEvent) {
+    @FXML
+    private void onEditButtonClick(ActionEvent event) {
+        Person selectedPerson = getSelectedPerson(); // Получаем выбранного человека из таблицы
+        if (selectedPerson != null) {
+            Dialog<Person> dialog = new Dialog<>();
+            dialog.setTitle("Редактировать запись");
+
+            // Создаем панель для ввода данных
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(20, 150, 10, 10));
+
+            TextField nameField = new TextField(selectedPerson.getName());
+            nameField.setPromptText("Имя");
+            DatePicker birthdatePicker = new DatePicker(LocalDate.parse(selectedPerson.getBirthdate()));
+            birthdatePicker.setPromptText("Дата рождения");
+            TextField emailField = new TextField(selectedPerson.getEmail());
+
+            grid.add(new Label("Имя:"), 0, 0);
+            grid.add(nameField, 1, 0);
+            grid.add(new Label("Дата рождения:"), 0, 1);
+            grid.add(birthdatePicker, 1, 1);
+            grid.add(new Label("Email"), 1, 2);
+
+            DialogPane dialogPane = dialog.getDialogPane();
+            dialogPane.setContent(grid);
+            dialogPane.getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+            // Обработка нажатия кнопки OK
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == ButtonType.OK) {
+                    // Создаем нового человека с обновленными данными
+                    int id = selectedPerson.getId(); // Сохраняем ID, чтобы не менять его
+                    String name = nameField.getText();
+                    String birthdate = birthdatePicker.getValue() != null ? birthdatePicker.getValue().toString() : "";
+                    String email  = emailField.getText();
+                    return new Person(id, name, birthdate, email);
+                }
+                return null;
+            });
+
+            // Показать диалог и обработать результат
+            dialog.showAndWait().ifPresent(updatedPerson -> {
+                try {
+                    database.deleteById(selectedPerson.getId()); // Удаляем старую запись
+                    database.add(updatedPerson); // Добавляем обновленную запись
+                    refreshTable(); // Обновляем таблицу
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    // Обработка ошибок при обновлении
+                }
+            });
+        } else {
+            showAlert("Пожалуйста, выберите запись для редактирования."); // Сообщение, если ничего не выбрано
+        }
     }
 
     @FXML

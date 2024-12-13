@@ -32,6 +32,7 @@
        <!-- Поля ввода для данных -->
     <HBox fx:id="TableButtons" spacing="10.0">
         <Button onAction="#onAddButtonClick" text="Добавить" />
+      <Button onAction="#onEditButtonClick" text="Изменить" />
         <Button onAction="#onDeleteButtonClick" text="Удалить" />
         <HBox fx:id="SearchButtons" alignment="TOP_RIGHT" spacing="10.0">
             <Button onAction="#onFindButtonClick" prefHeight="25.0" prefWidth="62.0" text="Найти" />
