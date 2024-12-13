@@ -17,6 +17,9 @@ public class MainApp extends Application {
         stage.setScene(scene);
         stage.show();
 
+        Controller controller = fxmlLoader.getController();
+        // Устанавливаем primaryStage в контроллер
+        controller.setPrimaryStage(stage);
     }
 
     public static void main(String[] args) {

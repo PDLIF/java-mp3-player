@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,8 @@ public class Controller {
 
     @FXML
     public void initialize() {
+
+
         idColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleIntegerProperty(cellData.getValue().getId()).asObject());
         nameColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getName()));
         birthdateColumn.setCellValueFactory(cellData -> new javafx.beans.property.SimpleStringProperty(cellData.getValue().getBirthdate()));
@@ -138,6 +141,7 @@ public class Controller {
                 database = new FileDatabase(selectedFile.getAbsolutePath());
                 updateUIState(true); // Активируем элементы интерфейса
                 loadData(); // Загрузить данные
+                updateAppTitle();
             } catch (IOException e) {
                 e.printStackTrace();
                 // Обработка ошибок при копировании файла
@@ -157,6 +161,7 @@ public class Controller {
                 backupFilePath = newFile.getAbsolutePath().replace(".csv", "_backup.csv"); // Устанавливаем путь к резервной копии
                 updateUIState(true); // Активируем элементы интерфейса
                 loadData(); // Загружаем данные (пока пустые)
+                updateAppTitle();
             } catch (IOException e) {
                 e.printStackTrace();
                 // Обработка ошибок при создании файла
@@ -293,6 +298,21 @@ public class Controller {
         TableButtons.setDisable(!isDatabaseSelected);
         dataTable.setDisable(!isDatabaseSelected);
         // Добавьте другие элементы интерфейса, которые нужно активировать/деактивировать
+    }
+
+    private Stage primaryStage; // Поле для хранения ссылки на основное окно
+    // Метод для установки основного окна
+    public void setPrimaryStage(Stage stage) {
+        this.primaryStage = stage;
+        updateAppTitle(); // Обновляем заголовок при инициализации
+    }
+
+    private void updateAppTitle() {
+        if (database != null && database.getFilePath() != null) {
+            primaryStage.setTitle("Приложение для работы с БД: " + new File(database.getFilePath()).getName());
+        } else {
+            primaryStage.setTitle("Приложение для работы с БД: база не подключена");
+        }
     }
 
 
