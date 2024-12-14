@@ -101,7 +101,8 @@ public class FileDatabase {
     public void clear() throws IOException {
         // Очищаем файл базы данных
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            // Просто не записываем ничего, тем самым очищаем файл
+            peopleMap.clear(); // Очищаем HashMap
+            saveData(); // Очищаем файл базы данных
         }
     }
     public String getFilePath() {

@@ -121,16 +121,6 @@ public class Controller {
         });
     }
 
-    // Метод для генерации уникального ID
-    private int generateUniqueId() {
-        try {
-            return database.getMaxId() + 1; // Генерируем новый ID
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 1; // Если произошла ошибка, возвращаем 1 как начальный ID
-        }
-    }
-
     @FXML
     private void onSelectDatabaseClick(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -398,6 +388,7 @@ public class Controller {
     private Person getSelectedPerson() {
         return dataTable.getSelectionModel().getSelectedItem(); // Предполагаем, что у вас есть TableView
     }
+
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setContentText(message);
@@ -427,5 +418,14 @@ public class Controller {
         }
     }
 
+    // Метод для генерации уникального ID
+    private int generateUniqueId() {
+        try {
+            return database.getMaxId() + 1; // Генерируем новый ID
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 1; // Если произошла ошибка, возвращаем 1 как начальный ID
+        }
+    }
 
 }
