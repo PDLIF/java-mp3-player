@@ -3,116 +3,80 @@ package com.example.databaseapp;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FileDatabase {
     private String filePath;
+    private Map<Integer, Person> peopleMap; // Хранение данных в HashMap
 
-    public FileDatabase() {
-
+    public FileDatabase( ) throws IOException {
     }
-    public FileDatabase(String filePath) {
+
+    public FileDatabase(String filePath) throws IOException {
         this.filePath = filePath;
+        this.peopleMap = new HashMap<>();
+        loadData(); // Загружаем данные при инициализации
     }
 
-    // Чтение всех записей
-    public List<Person> readAll() throws IOException {
-        List<Person> people = new ArrayList<>();
+    // Метод для загрузки данных из файла в HashMap
+    private void loadData() throws IOException {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                // Проверяем, что строка содержит хотя бы один элемент (идентификатор)
                 if (parts.length >= 1) {
                     int id = Integer.parseInt(parts[0]);
-                    String name = parts.length > 1 ? parts[1] : ""; // Если нет имени, устанавливаем пустую строку
-                    String birthdate = parts.length > 2 ? parts[2] : ""; // Если нет даты рождения, устанавливаем пустую строку
-                    String email = parts.length > 3 ? parts[3] : ""; // Если нет email, устанавливаем пустую строку
-                    people.add(new Person(id, name, birthdate, email));
-                } else {
-                    System.out.println("Пропускаем пустую строку: " + line);
+                    String name = parts.length > 1 ? parts[1] : "";
+                    String birthdate = parts.length > 2 ? parts[2] : "";
+                    String email = parts.length > 3 ? parts[3] : "";
+                    peopleMap.put(id, new Person(id, name, birthdate, email)); // Добавляем в HashMap
                 }
             }
         }
-        return people;
     }
 
+    // Метод для чтения всех записей
+    public List<Person> readAll() {
+        return new ArrayList<>(peopleMap.values()); // Возвращаем список всех людей
+    }
     // Добавление записи
     public void add(Person person) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-            writer.write(person.getId() + "," + person.getName() + "," + person.getBirthdate() + "," + person.getEmail());
-            writer.newLine();
-        }
+        peopleMap.put(person.getId(), person); // Добавляем или обновляем запись
+        saveData(); // Сохраняем данные в файл
     }
+
+    // Удаление записи
     public void deleteById(int id) throws IOException {
-        List<Person> people = readAll(); // Читаем все записи
-        people.removeIf(person -> person.getId() == id); // Удаляем запись с заданным ID
-        overwrite(people); // Перезаписываем файл с обновленным списком
+        peopleMap.remove(id); // Удаляем запись по ID
+        saveData(); // Сохраняем данные в файл
     }
-    // Перезапись всех записей (например, после обновления или удаления)
-    public void overwrite(List<Person> people) throws IOException {
+
+    // Сохранение данных из HashMap в файл
+    private void saveData() throws IOException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            for (Person person : people) {
+            for (Person person : peopleMap.values()) {
                 writer.write(person.getId() + "," + person.getName() + "," + person.getBirthdate() + "," + person.getEmail());
                 writer.newLine();
             }
         }
     }
-    public List<Person> searchById(int id) throws IOException {
-        long startTime = System.currentTimeMillis();
 
-        List<Person> foundPeople = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                int personId = Integer.parseInt(parts[0]);
-                String name = parts[1];
-                String birthdate = parts[2];
-                String email = parts[3];
-
-                if (personId == id) {
-                    foundPeople.add(new Person(personId, name, birthdate, email));
-                    break; // Если ID уникален, можно выйти из цикла
-                }
-            }
-        }
-
-        // блок кода, время выполнения которого нужно измерить
-        long endTime = System.currentTimeMillis();
-        System.out.println("endTime - startTime: " + (endTime - startTime));
-
-        return foundPeople;
+    // Поиск по ID
+    public Person searchById(int id) {
+        return peopleMap.get(id); // Поиск по ID за O(1)
     }
-    public List<Person> search(String name, String birthdate, String email) throws IOException {
-        List<Person> foundPeople = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                int id = Integer.parseInt(parts[0]);
-                String personName = parts[1];
-                String personBirthdate = parts[2];
-                String personEmail = parts[3];
 
-                // Проверка на совпадение по критериям
-                boolean matches = true;
-                if (!name.isEmpty() && !personName.toLowerCase().contains(name.toLowerCase())) {
-                    matches = false;
-                }
-                if (!birthdate.isEmpty() && !personBirthdate.equals(birthdate)) {
-                    matches = false;
-                }
-                if (!email.isEmpty() && !personEmail.toLowerCase().contains(email.toLowerCase())) {
-                    matches = false;
-                }
-
-                if (matches) {
-                    foundPeople.add(new Person(id, personName, personBirthdate, personEmail));
-                }
-            }
-        }
-        return foundPeople;
+    // Поиск по другим параметрам (можно реализовать с использованием Stream API)
+    public List<Person> search(String name, String birthdate, String email) {
+        return peopleMap.values().stream()
+                .filter(person -> (name.isEmpty() || person.getName().toLowerCase().contains(name.toLowerCase())) &&
+                        (birthdate.isEmpty() || person.getBirthdate().equals(birthdate)) &&
+                        (email.isEmpty() || person.getEmail().toLowerCase().contains(email.toLowerCase())))
+                .collect(Collectors.toList());
     }
+
     public void clear() throws IOException {
         // Очищаем файл базы данных
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {

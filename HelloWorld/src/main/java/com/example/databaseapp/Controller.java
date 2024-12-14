@@ -43,6 +43,9 @@ public class Controller {
     private String backupFilePath;
     private final ObservableList<Person> data = FXCollections.observableArrayList();
 
+    public Controller() throws IOException {
+    }
+
     @FXML
     public void initialize() {
 
@@ -59,13 +62,9 @@ public class Controller {
     }
 
     private void loadData() {
-        try {
-            List<Person> people = database.readAll();
-            data.setAll(people);
-            dataTable.setItems(data); // Обновляем таблицу
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        List<Person> people = database.readAll();
+        data.setAll(people);
+        dataTable.setItems(data); // Обновляем таблицу
     }
 
     @FXML
@@ -366,7 +365,7 @@ public class Controller {
             if (!idText.isEmpty()) {
                 // Если ID указан, ищем только по ID
                 int id = Integer.parseInt(idText);
-                foundPeople = database.searchById(id); // Метод поиска по ID
+                foundPeople = (List<Person>) database.searchById(id); // Метод поиска по ID
             } else {
                 // Если ID не указан, ищем по другим параметрам
                 foundPeople = database.search(name, birthdate, email);
@@ -385,13 +384,6 @@ public class Controller {
             alert.setTitle("Ошибка ввода");
             alert.setHeaderText(null);
             alert.setContentText("Пожалуйста, введите корректный ID.");
-            alert.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Ошибка поиска");
-            alert.setHeaderText(null);
-            alert.setContentText("Произошла ошибка при поиске данных.");
             alert.showAndWait();
         }
     }
