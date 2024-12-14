@@ -365,7 +365,8 @@ public class Controller {
             if (!idText.isEmpty()) {
                 // Если ID указан, ищем только по ID
                 int id = Integer.parseInt(idText);
-                foundPeople = (List<Person>) database.searchById(id); // Метод поиска по ID
+                Person foundPerson = database.searchById(id); // Метод поиска по ID
+                foundPeople = foundPerson != null ? List.of(foundPerson) : List.of(); // Оборачиваем в список
             } else {
                 // Если ID не указан, ищем по другим параметрам
                 foundPeople = database.search(name, birthdate, email);

@@ -43,14 +43,20 @@ public class FileDatabase {
     }
     // Добавление записи
     public void add(Person person) throws IOException {
+        long startTime = System.nanoTime(); // Начало замера времени
         peopleMap.put(person.getId(), person); // Добавляем или обновляем запись
         saveData(); // Сохраняем данные в файл
+        long endTime = System.nanoTime(); // Конец замера времени
+        System.out.println("Время добавления записи: " + (endTime - startTime) + " нс");
     }
 
     // Удаление записи
     public void deleteById(int id) throws IOException {
+        long startTime = System.nanoTime(); // Начало замера времени
         peopleMap.remove(id); // Удаляем запись по ID
         saveData(); // Сохраняем данные в файл
+        long endTime = System.nanoTime(); // Конец замера времени
+        System.out.println("Время удаления записи: " + (endTime - startTime) + " нс");
     }
 
     // Сохранение данных из HashMap в файл
@@ -65,16 +71,27 @@ public class FileDatabase {
 
     // Поиск по ID
     public Person searchById(int id) {
-        return peopleMap.get(id); // Поиск по ID за O(1)
+        long startTime = System.nanoTime(); // Начало замера времени
+        Person person = peopleMap.get(id); // Поиск по ID за O(1)
+        long endTime = System.nanoTime(); // Конец замера времени
+        System.out.println("Время поиска по ID: " + (endTime - startTime) + " нс");
+        return person;
     }
 
-    // Поиск по другим параметрам (можно реализовать с использованием Stream API)
+    // Поиск по другим параметрам
     public List<Person> search(String name, String birthdate, String email) {
-        return peopleMap.values().stream()
-                .filter(person -> (name.isEmpty() || person.getName().toLowerCase().contains(name.toLowerCase())) &&
-                        (birthdate.isEmpty() || person.getBirthdate().equals(birthdate)) &&
-                        (email.isEmpty() || person.getEmail().toLowerCase().contains(email.toLowerCase())))
-                .collect(Collectors.toList());
+        long startTime = System.nanoTime(); // Начало замера времени
+        List<Person> result = new ArrayList<>();
+        for (Person person : peopleMap.values()) {
+            if ((name.isEmpty() || person.getName().toLowerCase().contains(name.toLowerCase())) &&
+                    (birthdate.isEmpty() || person.getBirthdate().equals(birthdate)) &&
+                    (email.isEmpty() || person.getEmail().toLowerCase().contains(email.toLowerCase()))) {
+                result.add(person);
+            }
+        }
+        long endTime = System.nanoTime(); // Конец замера времени
+        System.out.println("Время поиска по параметрам: " + (endTime - startTime) + " нс");
+        return result;
     }
 
     public void clear() throws IOException {

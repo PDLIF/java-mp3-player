@@ -10,7 +10,7 @@ import java.util.Random;
 public class TestGenerator {
     public static void main(String[] args) {
         String filePath = "E:/Education/DB/generated_data.csv"; // Путь к файлу, который будет создан
-        int numberOfRecords = 1000; // Количество записей для генерации
+        int numberOfRecords = 30000; // Количество записей для генерации
         generateData(filePath, numberOfRecords);
     }
 
