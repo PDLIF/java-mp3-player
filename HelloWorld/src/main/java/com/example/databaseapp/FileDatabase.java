@@ -48,7 +48,7 @@ public class FileDatabase {
         saveData(); // Сохраняем данные в файл
         long endTime = System.nanoTime(); // Конец замера времени
         long duration = endTime - startTime;
-        System.out.println("Время добавления записи:  " + duration + " нс (" + (duration / 1_000_000.0) + " с)");
+        System.out.println("Время добавления записи:  " + duration + " нс (" + (duration / 1_000_000_000) + " с)");
     }
 
     // Удаление записи
@@ -58,7 +58,7 @@ public class FileDatabase {
         saveData(); // Сохраняем данные в файл
         long endTime = System.nanoTime(); // Конец замера времени
         long duration = endTime - startTime;
-        System.out.println("Время удаления записи: " + duration + " нс (" + (duration / 1_000_000.0) + " с)");
+        System.out.println("Время удаления записи: " + duration + " нс (" + (duration / 1_000_000_000) + " с)");
     }
 
     // Сохранение данных из HashMap в файл
@@ -77,7 +77,7 @@ public class FileDatabase {
         Person person = peopleMap.get(id); // Поиск по ID за O(1)
         long endTime = System.nanoTime(); // Конец замера времени
         long duration = endTime - startTime;
-        System.out.println("Время поиска по ID: " + duration + " нс (" + (duration / 1_000_000.0) + " с)");
+        System.out.println("Время поиска по ID: " + duration + " нс (" + (duration / 1_000_000_000) + " с)");
         return person;
     }
 
@@ -94,7 +94,7 @@ public class FileDatabase {
         }
         long endTime = System.nanoTime(); // Конец замера времени
         long duration = endTime - startTime;
-        System.out.println("Время поиска по параметрам: " + duration + " нс (" + (duration / 1_000_000.0) + " с)");
+        System.out.println("Время поиска по параметрам: " + duration + " нс (" + (duration / 1_000_000_000) + " с)");
         return result;
     }
 
