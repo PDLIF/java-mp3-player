@@ -21,11 +21,16 @@ public class FileDatabase {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                int id = Integer.parseInt(parts[0]);
-                String name = parts[1];
-                String birthdate = parts[2];
-                String email = parts[3];
-                people.add(new Person(id, name, birthdate, email));
+                // Проверяем, что строка содержит хотя бы один элемент (идентификатор)
+                if (parts.length >= 1) {
+                    int id = Integer.parseInt(parts[0]);
+                    String name = parts.length > 1 ? parts[1] : ""; // Если нет имени, устанавливаем пустую строку
+                    String birthdate = parts.length > 2 ? parts[2] : ""; // Если нет даты рождения, устанавливаем пустую строку
+                    String email = parts.length > 3 ? parts[3] : ""; // Если нет email, устанавливаем пустую строку
+                    people.add(new Person(id, name, birthdate, email));
+                } else {
+                    System.out.println("Пропускаем пустую строку: " + line);
+                }
             }
         }
         return people;
