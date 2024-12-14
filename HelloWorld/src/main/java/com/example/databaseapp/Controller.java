@@ -41,7 +41,7 @@ public class Controller {
 
     private FileDatabase database = new FileDatabase();
     private String backupFilePath;
-    private final ObservableList<Person> data = FXCollections.observableArrayList();
+    private ObservableList<Person> data = FXCollections.observableArrayList();
 
     public Controller() throws IOException {
     }
@@ -172,6 +172,7 @@ public class Controller {
             try {
                 // Копируем содержимое резервного файла в основной файл базы данных
                 Files.copy(backupFile.toPath(), mainDatabaseFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                database.loadDataFromFile(); // Загружаем данные из файла в peopleMap
                 loadData(); // Загружаем данные из основного файла базы данных
             } catch (IOException e) {
                 e.printStackTrace();
@@ -186,8 +187,6 @@ public class Controller {
         database.clear();
         loadData();
     }
-
-
     @FXML
     private void onExportToExcelClick(ActionEvent event) {
         Workbook workbook = new XSSFWorkbook(); // Создаем новый рабочий файл Excel
@@ -231,6 +230,9 @@ public class Controller {
             e.printStackTrace();
         }
     }
+
+    // Блок второго ряда
+
     @FXML
     private void onUpdateButtonClick(ActionEvent actionEvent) {
         // Создаем резервную копию, если она уже существует
@@ -379,6 +381,7 @@ public class Controller {
         }
     }
 
+    // Служебные функции
     private void refreshTable() throws IOException {
         List<Person> people = database.readAll(); // Читаем обновленный список людей
         data.setAll(people); // Обновляем данные в ObservableList

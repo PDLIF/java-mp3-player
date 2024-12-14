@@ -36,7 +36,22 @@ public class FileDatabase {
             }
         }
     }
-
+    public void loadDataFromFile() throws IOException {
+        peopleMap.clear(); // Очищаем текущие данные
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length >= 1) {
+                    int id = Integer.parseInt(parts[0]);
+                    String name = parts.length > 1 ? parts[1] : "";
+                    String birthdate = parts.length > 2 ? parts[2] : "";
+                    String email = parts.length > 3 ? parts[3] : "";
+                    peopleMap.put(id, new Person(id, name, birthdate, email)); // Добавляем в HashMap
+                }
+            }
+        }
+    }
     // Метод для чтения всех записей
     public List<Person> readAll() {
         return new ArrayList<>(peopleMap.values()); // Возвращаем список всех людей
